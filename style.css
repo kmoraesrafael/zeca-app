@@ -1,0 +1,349 @@
+/* Cores da identidade Z.E.C.A (docs/brand/zeca_logo.svg), as mesmas do app Android (Theme.kt). */
+:root {
+  --navy: #1f1b8c;
+  --green: #1fc290;
+  --lilac: #b36be6;
+  --blue: #5b8def;
+  --subtitle-blue: #3f78d0;
+  --red: #e5484d;
+  /* versões mais saturadas, para os botões (Theme.kt: LilacStrong, BlueStrong, GreenStrong) */
+  --lilac-strong: #9346e6;
+  --blue-strong: #2f6ff0;
+  --green-strong: #12b886;
+  --canvas: #f5f4fb;
+  --muted: #49454f;
+  color-scheme: light;
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #fff;
+  color: var(--navy);
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+[hidden] { display: none !important; }
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ---------- logo ---------- */
+.logo { display: flex; align-items: center; }
+.logo .mark { flex: none; }
+.logo-title { font-weight: 800; line-height: 1; color: var(--navy); letter-spacing: -0.01em; }
+.logo-title span { color: var(--green); }
+.logo-subtitle {
+  color: var(--subtitle-blue);
+  font-weight: 500;
+  white-space: nowrap;
+  /* ocupa a largura do nome, como no logo original */
+  font-size: 0.16em;
+  letter-spacing: 0.05em;
+  margin-top: 0.12em;
+}
+.logo-large { font-size: 60px; }
+.logo-large .mark { width: 76px; height: 76px; margin-right: 8px; }
+.logo-small .logo-title { font-size: 26px; }
+.logo-small .mark { width: 34px; height: 34px; margin-right: 3px; }
+
+/* ---------- tela inicial ---------- */
+#home { align-items: center; padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+.spacer { flex: 1; }
+.spacer.short { flex: 0.6; }
+.intro { margin: 20px 0 0; text-align: center; color: var(--muted); font-size: 16px; max-width: 360px; }
+
+.sources { display: flex; justify-content: space-evenly; width: 100%; max-width: 420px; }
+.source { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+/* quadrado de cantos arredondados, como ícone de app, só com a borda */
+.source-icon {
+  width: 112px;
+  height: 112px;
+  border-radius: 26px;
+  display: grid;
+  place-items: center;
+  border: 4px solid var(--c);
+  color: var(--c);
+  transition: transform 0.1s, background 0.15s;
+}
+.source:active .source-icon { transform: scale(0.96); background: color-mix(in srgb, var(--c) 10%, transparent); }
+.source-icon svg { width: 56px; height: 56px; fill: currentColor; }
+.source-label { margin-top: 10px; font-weight: 600; font-size: 17px; }
+.source.disabled { pointer-events: none; opacity: 0.5; }
+
+.tutorial-button {
+  margin-top: 24px;
+  width: 100%;
+  max-width: 280px;
+  height: 46px;
+  border: 2.5px solid var(--green-strong);
+  border-radius: 14px;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 600;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+.tutorial-button:active { transform: scale(0.98); background: color-mix(in srgb, var(--green-strong) 10%, transparent); }
+.tutorial-button svg { width: 22px; height: 22px; fill: var(--green-strong); }
+
+.status { flex: 1.6; display: flex; flex-direction: column; align-items: center; padding-top: 24px; width: 100%; }
+.error { color: #b3261e; text-align: center; margin: 0; }
+.model-info { font-size: 11px; color: color-mix(in srgb, var(--navy) 40%, transparent); margin: 0 0 12px; text-align: center; }
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, var(--navy) 15%, transparent);
+  border-top-color: var(--navy);
+  animation: spin 0.9s linear infinite;
+}
+.spinner.small { width: 22px; height: 22px; border-width: 3px; border-color: color-mix(in srgb, var(--green) 20%, transparent); border-top-color: var(--green); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- tela de marcação ---------- */
+/* as laterais dividem o espaço que sobra por igual, então o logo fica sempre no centro */
+.topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 6px 8px; gap: 4px; }
+.side { display: flex; align-items: center; min-width: 0; }
+.side-end { justify-content: flex-end; }
+
+/* selo da contagem: grande e com fundo escuro, para achar o número de relance */
+.count {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 14px;
+  padding: 6px 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.count-number { display: inline-block; font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.count-label { font-size: 14px; color: #c9c6ff; }
+/* ao adicionar/remover um ovo: o número cresce um pouco e o selo puxa rápido para verde/roxo */
+.count.added { animation: count-tint-add 0.6s ease-out; }
+.count.removed { animation: count-tint-remove 0.6s ease-out; }
+.count.added .count-number, .count.removed .count-number { animation: count-bump 0.32s ease-out; }
+@keyframes count-bump { 40% { transform: scale(1.08); } }
+@keyframes count-tint-add { 25% { background: #1b6f74; } }
+@keyframes count-tint-remove { 25% { background: #5a2a6e; } }
+@media (prefers-reduced-motion: reduce) {
+  .count.added, .count.removed, .count.added .count-number, .count.removed .count-number { animation: none; }
+}
+
+.icon-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--c, var(--navy));
+}
+.icon-button svg { fill: currentColor; }
+.icon-button:disabled { opacity: 0.3; cursor: default; }
+.cancel { width: 40px; height: 40px; color: color-mix(in srgb, var(--navy) 70%, transparent); }
+.cancel svg { width: 22px; height: 22px; }
+.help { width: 40px; height: 40px; color: var(--green-strong); }
+.help svg { width: 28px; height: 28px; }
+
+.stage { position: relative; flex: 1; background: var(--canvas); overflow: hidden; }
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+.hint {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  margin: 0 auto;
+  width: fit-content;
+  background: color-mix(in srgb, var(--navy) 75%, transparent);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  text-align: center;
+  pointer-events: none;
+}
+.counting {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--navy) 35%, transparent);
+  display: grid;
+  place-items: center;
+}
+.counting-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 600;
+}
+
+.bottombar { display: flex; justify-content: space-between; align-items: center; padding: 6px 28px; }
+.bottombar .icon-button { width: 64px; height: 64px; position: relative; }
+.bottombar .icon-button svg { width: 44px; height: 44px; }
+.bottombar .action svg { width: 40px; height: 40px; }
+.mode { opacity: 0.4; }
+.mode[aria-pressed="true"] { opacity: 1; }
+/* ponto embaixo do modo ativo */
+.mode::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: transparent;
+}
+.mode[aria-pressed="true"]::after { background: var(--c); }
+
+/* ---------- tutorial ---------- */
+#tutorial { z-index: 2; background: #fff; }
+.tutorial-bar { display: flex; align-items: center; gap: 6px; padding: 8px 8px; border-bottom: 1px solid #ecebf5; }
+.tutorial-bar .icon-button { width: 44px; height: 44px; }
+.tutorial-bar svg { width: 24px; height: 24px; }
+.tutorial-bar h1 { margin: 0; font-size: 20px; font-weight: 700; }
+.tutorial-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px max(20px, calc((100% - 560px) / 2)) 24px;
+  color: #3a3750;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.tutorial-intro { margin: 14px 0 0; color: var(--muted); }
+.tutorial-body h2 { display: flex; align-items: center; gap: 10px; margin: 24px 0 0; font-size: 18px; color: var(--navy); }
+.step {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+}
+.tutorial-body ul { margin: 8px 0 0; padding-left: 22px; }
+.tutorial-body li { margin-bottom: 6px; }
+.tutorial-body b { color: var(--navy); }
+.tutorial-count {
+  margin: 4px 0 4px 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  border: 1.5px dashed #c9c6e8;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+.tutorial-count .count { outline: 3px solid #ffd43b; outline-offset: 2px; }
+.tutorial-count svg { width: 22px; height: 22px; fill: #e8a400; }
+.tutorial-count > span { font-size: 14px; color: var(--muted); }
+.tutorial-tool { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
+.tutorial-tool svg { flex: none; width: 30px; height: 30px; fill: var(--c); }
+.tutorial-tool p { margin: 4px 0 0; }
+.primary-button {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--navy);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+}
+.primary-button:active { background: color-mix(in srgb, var(--navy) 85%, #000); }
+
+/* ---------- diálogos ---------- */
+dialog {
+  border: 0;
+  border-radius: 28px;
+  padding: 24px;
+  width: min(340px, calc(100vw - 32px));
+  color: #1c1b1f;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.32); }
+dialog h2 { margin: 0 0 16px; font-size: 22px; font-weight: 500; }
+#dialog-body { font-size: 14px; color: var(--muted); line-height: 1.45; white-space: pre-line; }
+.dialog-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+.dialog-buttons:empty { display: none; }
+.dialog-buttons button {
+  border: 0;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.dialog-buttons button:active { background: color-mix(in srgb, var(--navy) 10%, transparent); }
+.progress { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--navy) 15%, transparent); overflow: hidden; }
+.progress::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: var(--navy);
+  animation: slide 1.2s ease-in-out infinite;
+}
+@keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+
+/* ---------- abertura ---------- */
+/* Os ovos aparecem um a um (como se fossem contados), as quinas da câmera fecham sobre eles
+   e a tela pisca como um flash de foto; no auge do flash a abertura some e revela a tela inicial.
+   Os tempos são os mesmos do app Android (SplashScreen.kt). */
+#splash { position: fixed; inset: 0; z-index: 10; animation: splash-gone 0s 2.03s forwards; }
+.splash-bg, .splash-flash { position: absolute; inset: 0; background: #fff; }
+.splash-bg { display: grid; place-items: center; animation: splash-gone 0s 1.58s forwards; }
+.splash-mark { width: min(46vw, 180px); height: min(46vw, 180px); overflow: visible; }
+.splash-egg, .splash-nucleus { transform-box: fill-box; transform-origin: center; }
+.splash-egg { animation: splash-pop 0.4s calc(150ms + var(--i) * 110ms) cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.splash-nucleus { animation: splash-pop 0.3s calc(240ms + var(--i) * 110ms) cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.splash-corner { animation: splash-focus 0.35s 1.05s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.splash-flash { opacity: 0; animation: splash-flash 0.53s 1.5s linear forwards; }
+@keyframes splash-pop { from { transform: scale(0); } }
+/* de fora para dentro, passando um pouco do ponto, como o foco da câmera travando */
+@keyframes splash-focus {
+  from { opacity: 0; transform: translate(calc(var(--dx) * 14px), calc(var(--dy) * 14px)); }
+}
+@keyframes splash-flash {
+  0% { opacity: 0; animation-timing-function: ease-out; }
+  15% { opacity: 1; animation-timing-function: ease-in-out; }
+  100% { opacity: 0; }
+}
+@keyframes splash-gone { to { visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { #splash { display: none; } }

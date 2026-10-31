@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Z.E.C.A</title>
+  <meta name="description" content="Zebrafish Egg Counter Assistant — conta ovos de peixe-zebra em fotos de placa de Petri.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Z.E.C.A">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/mark.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <!-- Símbolo do Z.E.C.A (docs/brand/zeca_logo.svg): enquadramento de detecção + anel de seis ovos. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="zeca-mark" viewBox="80 30 140 140">
+      <path d="M84 50 V34 H100 M200 34 H216 V50 M84 150 V166 H100 M200 166 H216 V150" fill="none" stroke="#1FC290" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#B36BE6"><circle cx="190" cy="100" r="19"/><circle cx="130" cy="134.6" r="19"/><circle cx="130" cy="65.4" r="19"/></g>
+      <g fill="#5B8DEF"><circle cx="170" cy="134.6" r="19"/><circle cx="110" cy="100" r="19"/><circle cx="170" cy="65.4" r="19"/></g>
+      <g fill="#1F1B8C"><circle cx="190" cy="100" r="5"/><circle cx="170" cy="134.6" r="5"/><circle cx="130" cy="134.6" r="5"/><circle cx="110" cy="100" r="5"/><circle cx="130" cy="65.4" r="5"/><circle cx="170" cy="65.4" r="5"/></g>
+    </symbol>
+    <!-- "?" do botão Tutorial e da tela de marcação (Material "help_outline", o mesmo do app Android) -->
+    <symbol id="help-icon" viewBox="0 0 24 24">
+      <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+    </symbol>
+  </svg>
+
+  <!-- Abertura (style.css): os ovos aparecem um a um, as quinas da câmera fecham e a tela pisca como numa foto. -->
+  <div id="splash" aria-hidden="true">
+    <div class="splash-bg">
+      <svg class="splash-mark" viewBox="80 30 140 140">
+        <g class="splash-egg" style="--i: 0"><circle cx="130" cy="65.4" r="19" fill="#B36BE6"/><circle class="splash-nucleus" cx="130" cy="65.4" r="5" fill="#1F1B8C"/></g>
+        <g class="splash-egg" style="--i: 1"><circle cx="170" cy="65.4" r="19" fill="#5B8DEF"/><circle class="splash-nucleus" cx="170" cy="65.4" r="5" fill="#1F1B8C"/></g>
+        <g class="splash-egg" style="--i: 2"><circle cx="190" cy="100" r="19" fill="#B36BE6"/><circle class="splash-nucleus" cx="190" cy="100" r="5" fill="#1F1B8C"/></g>
+        <g class="splash-egg" style="--i: 3"><circle cx="170" cy="134.6" r="19" fill="#5B8DEF"/><circle class="splash-nucleus" cx="170" cy="134.6" r="5" fill="#1F1B8C"/></g>
+        <g class="splash-egg" style="--i: 4"><circle cx="130" cy="134.6" r="19" fill="#B36BE6"/><circle class="splash-nucleus" cx="130" cy="134.6" r="5" fill="#1F1B8C"/></g>
+        <g class="splash-egg" style="--i: 5"><circle cx="110" cy="100" r="19" fill="#5B8DEF"/><circle class="splash-nucleus" cx="110" cy="100" r="5" fill="#1F1B8C"/></g>
+        <g fill="none" stroke="#1FC290" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path class="splash-corner" style="--dx: -1; --dy: -1" d="M84 50 V34 H100"/>
+          <path class="splash-corner" style="--dx: 1; --dy: -1" d="M200 34 H216 V50"/>
+          <path class="splash-corner" style="--dx: -1; --dy: 1" d="M84 150 V166 H100"/>
+          <path class="splash-corner" style="--dx: 1; --dy: 1" d="M200 166 H216 V150"/>
+        </g>
+      </svg>
+    </div>
+    <div class="splash-flash"></div>
+  </div>
+
+  <main id="home" class="screen">
+    <div class="spacer"></div>
+    <div class="logo logo-large" role="img" aria-label="Z.E.C.A — Zebrafish Egg Counter Assistant">
+      <svg class="mark"><use href="#zeca-mark"/></svg>
+      <div class="logo-text">
+        <div class="logo-title">ZEC<span>A</span></div>
+        <div class="logo-subtitle">ZEBRAFISH EGG COUNTER ASSISTANT</div>
+      </div>
+    </div>
+    <p class="intro">Fotografe a placa de Petri ou escolha uma foto já tirada.</p>
+    <div class="spacer short"></div>
+    <div class="sources">
+      <label class="source" style="--c: var(--lilac-strong)">
+        <input id="pick-camera" type="file" accept="image/*" capture="environment" hidden>
+        <span class="source-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+        </span>
+        <span class="source-label">Câmera</span>
+      </label>
+      <label class="source" style="--c: var(--blue-strong)">
+        <input id="pick-gallery" type="file" accept="image/*" hidden>
+        <span class="source-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4 2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>
+        </span>
+        <span class="source-label">Galeria</span>
+      </label>
+    </div>
+    <button id="open-tutorial" class="tutorial-button">
+      <svg viewBox="0 0 24 24"><use href="#help-icon"/></svg>Tutorial
+    </button>
+    <div class="status">
+      <div id="home-loading" class="spinner" hidden></div>
+      <p id="home-error" class="error" hidden></p>
+    </div>
+    <p id="model-info" class="model-info"></p>
+  </main>
+
+  <section id="annotate" class="screen" hidden>
+    <header class="topbar">
+      <div class="side">
+        <button id="cancel" class="icon-button cancel" aria-label="Cancelar">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+        <button id="help" class="icon-button help" aria-label="Tutorial">
+          <svg viewBox="0 0 24 24"><use href="#help-icon"/></svg>
+        </button>
+      </div>
+      <div class="logo logo-small" role="img" aria-label="Z.E.C.A">
+        <svg class="mark"><use href="#zeca-mark"/></svg>
+        <div class="logo-title">ZEC<span>A</span></div>
+      </div>
+      <div class="side side-end">
+        <div id="count-pill" class="count" aria-live="polite">
+          <span id="count" class="count-number">0</span><span class="count-label">ovos</span>
+        </div>
+      </div>
+    </header>
+    <div class="stage">
+      <canvas id="canvas"></canvas>
+      <div id="hint" class="hint"></div>
+      <div id="counting" class="counting" hidden>
+        <div class="counting-box"><div class="spinner small"></div>Z.E.C.A está contando…</div>
+      </div>
+    </div>
+    <nav class="bottombar">
+      <button id="mode-add" class="icon-button mode" style="--c: var(--green)" aria-label="Modo adicionar" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      </button>
+      <button id="send" class="icon-button action" style="--c: var(--blue-strong)" aria-label="Enviar contagem">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+      <button id="mode-remove" class="icon-button mode" style="--c: var(--red)" aria-label="Modo remover" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+      </button>
+    </nav>
+  </section>
+
+  <!-- Abre por cima da tela inicial ou da marcação (sem perder as marcações); o texto é o mesmo do app Android (TutorialScreen.kt). -->
+  <section id="tutorial" class="screen" hidden>
+    <header class="tutorial-bar">
+      <button id="tutorial-back" class="icon-button" aria-label="Voltar">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <h1>Como usar o Z.E.C.A</h1>
+    </header>
+    <div id="tutorial-body" class="tutorial-body">
+      <p class="tutorial-intro">Uma foto boa é metade da contagem certa. Siga estes passos:</p>
+
+      <h2><span class="step">1</span>Prepare a placa</h2>
+      <ul>
+        <li><b>No máximo 300 ovos por placa.</b> Se tiver mais, divida em duas.</li>
+        <li><b>Espalhe bem os ovos:</b> evite ovos encostados ou um em cima do outro.</li>
+        <li>Retire bolhas, sujeira e restos que possam parecer ovos.</li>
+        <li>Tire a tampa: ela reflete a luz e embaça.</li>
+        <li>Limpe o fundo da placa por fora (marcas de dedo, gotas).</li>
+      </ul>
+
+      <h2><span class="step">2</span>Fundo e luz</h2>
+      <ul>
+        <li>Coloque a placa sobre o EVA preto, limpo e liso.</li>
+        <li>Prefira luz clara e espalhada, como a do ambiente ou de uma janela.</li>
+        <li><b>Evite reflexos:</b> nada de lâmpada forte bem em cima da placa, ela vira uma mancha branca na água.</li>
+        <li>Não use o flash.</li>
+        <li>Cuidado com a sombra da mão ou do celular sobre a placa.</li>
+      </ul>
+
+      <h2><span class="step">3</span>Tire a foto</h2>
+      <ul>
+        <li>Celular reto, paralelo à placa, olhando de cima.</li>
+        <li>A placa inteira na foto, ocupando quase toda a tela.</li>
+        <li><b>Toque na tela sobre os ovos para focar</b> e espere o foco antes de fotografar.</li>
+        <li>Não use o zoom da câmera: aproxime o celular.</li>
+        <li>Segure firme ou apoie os cotovelos na bancada.</li>
+        <li><b>Amplie a foto e confira:</b> os ovos devem ter contorno nítido. Borrada ou com reflexo? Tire outra.</li>
+      </ul>
+
+      <h2><span class="step">4</span>Confira a contagem</h2>
+      <ul>
+        <li>O Z.E.C.A marca cada ovo com um ponto verde. O total fica no canto de cima, à direita:</li>
+      </ul>
+      <div class="tutorial-count" aria-hidden="true">
+        <div class="count"><span class="count-number">127</span><span class="count-label">ovos</span></div>
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        <span>total de ovos</span>
+      </div>
+      <ul>
+        <li>Dois dedos dão zoom; um dedo arrasta a foto.</li>
+      </ul>
+
+      <h2><span class="step">5</span>Corrija as marcações</h2>
+      <div class="tutorial-tool" style="--c: var(--green)">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <p><b>Adicionar:</b> toque no + e depois em cada ovo que ficou sem ponto.</p>
+      </div>
+      <div class="tutorial-tool" style="--c: var(--red)">
+        <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+        <p><b>Remover:</b> toque no − e depois no ponto errado (bolha, sujeira, ponto duplicado).</p>
+      </div>
+      <ul>
+        <li>Toque de novo no botão para sair do modo.</li>
+      </ul>
+
+      <h2><span class="step">6</span>Envie</h2>
+      <div class="tutorial-tool" style="--c: var(--blue-strong)">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        <p>Com a contagem certa, toque no botão azul de enviar (precisa de internet). Cada envio ajuda a treinar o Z.E.C.A.</p>
+      </div>
+
+      <p class="tutorial-intro">Para ver este tutorial de novo durante a marcação, toque no <b>?</b> no topo da tela.</p>
+      <button id="tutorial-done" class="primary-button">Entendi</button>
+    </div>
+  </section>
+
+  <dialog id="dialog">
+    <h2 id="dialog-title"></h2>
+    <div id="dialog-body"></div>
+    <div id="dialog-buttons" class="dialog-buttons"></div>
+  </dialog>
+</body>
+</html>

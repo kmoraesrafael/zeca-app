@@ -1,0 +1,41 @@
+{
+  "version": "yolo11n-20261030-39img",
+  "release": "0.1.2",
+  "input_size": 1280,
+  "candidate_conf": 0.05,
+  "iou_threshold": 0.5,
+  "variants": [
+    "original",
+    "hflip",
+    "vflip"
+  ],
+  "conf_threshold": 0.45,
+  "min_size": 0.9,
+  "min_distance": 0.9,
+  "fp_weight": 3.0,
+  "plate": {
+    "work_size": 256,
+    "edge_fraction": 0.08,
+    "min_radius": 0.2,
+    "max_radius": 0.62,
+    "aspects": [
+      0.8,
+      0.87,
+      0.94,
+      1.0,
+      1.07,
+      1.15,
+      1.25
+    ],
+    "min_score": 0.25,
+    "mask_margin": 1.06,
+    "crop_margin": 1.1,
+    "fill": 114
+  },
+  "cross_validation": {
+    "false_per_egg": 0.0476,
+    "missed_per_egg": 0.1695,
+    "mean_rel_count_error": 0.1685
+  },
+  "train_images": 39
+}
